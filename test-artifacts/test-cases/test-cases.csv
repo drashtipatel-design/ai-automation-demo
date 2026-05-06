@@ -1,0 +1,206 @@
+Test Case ID,Test Scenario,Test Description,Module,Preconditions,Test Steps,Test Data,Expected Result,Actual Result,Status,Priority,Test Type
+SCRUM7-TC-001,Login Page Route Access,Verify login page loads at /login route,UI,Application is running,"1. Open browser
+2. Navigate to http://localhost:5173/login",URL: http://localhost:5173/login,Login page renders with all form elements visible,,, High,Positive
+SCRUM7-TC-002,Username/Email Field Presence,Verify Username/Email input field is present with placeholder,UI,Login page is loaded,"1. Open /login
+2. Inspect the first input field",,Username/Email field is visible with placeholder text,,, High,Positive
+SCRUM7-TC-003,Password Field Presence,Verify Password input field is present with placeholder,UI,Login page is loaded,"1. Open /login
+2. Inspect the password input field",,Password field is visible with type=password and placeholder,,, High,Positive
+SCRUM7-TC-004,Login Button Presence,Verify Login button is present and enabled by default,UI,Login page is loaded,"1. Open /login
+2. Inspect the Login button",,Login button is visible and enabled,,, High,Positive
+SCRUM7-TC-005,Successful Login with Username,Verify user can login with valid username and password,UI,"User account exists: username=testuser; password=Test@1234","1. Open /login
+2. Enter valid username
+3. Enter valid password
+4. Click Login button","Username: testuser
+Password: Test@1234","User is redirected to /dashboard; session token stored in sessionStorage",,, High,Positive
+SCRUM7-TC-006,Successful Login with Email,Verify user can login with valid email and password,UI,"User account exists: email=test@vintelix.com; password=Test@1234","1. Open /login
+2. Enter valid email
+3. Enter valid password
+4. Click Login button","Email: test@vintelix.com
+Password: Test@1234","User is redirected to /dashboard; session token stored in sessionStorage",,, High,Positive
+SCRUM7-TC-007,Invalid Password Login,Verify error is shown for invalid password with valid username,UI,Login page is loaded,"1. Open /login
+2. Enter valid username
+3. Enter wrong password
+4. Click Login button","Username: testuser
+Password: WrongPass123","Error message 'Invalid Email/Username or Password' is displayed; user remains on /login",,, High,Negative
+SCRUM7-TC-008,Non-existent User Login,Verify error is shown when username/email does not exist,UI,Login page is loaded,"1. Open /login
+2. Enter non-existent username
+3. Enter any password
+4. Click Login button","Username: ghost_user
+Password: Test@1234","Error message 'Invalid Email/Username or Password' is displayed",,, High,Negative
+SCRUM7-TC-009,Empty Username Field Validation,Verify client-side validation triggers when username is empty,UI,Login page is loaded,"1. Open /login
+2. Leave username/email field empty
+3. Enter valid password
+4. Click Login button","Username: (empty)
+Password: Test@1234","Inline validation error shown for username field; form not submitted",,, High,Negative
+SCRUM7-TC-010,Empty Password Field Validation,Verify client-side validation triggers when password is empty,UI,Login page is loaded,"1. Open /login
+2. Enter valid username
+3. Leave password field empty
+4. Click Login button","Username: testuser
+Password: (empty)","Inline validation error shown for password field; form not submitted",,, High,Negative
+SCRUM7-TC-011,Both Fields Empty Validation,Verify validation errors for both fields when form submitted empty,UI,Login page is loaded,"1. Open /login
+2. Click Login button without filling anything",,Validation errors shown for both username and password fields; form not submitted,,, High,Negative
+SCRUM7-TC-012,Password Visibility Toggle,Verify show/hide password toggle changes input type,UI,Login page is loaded,"1. Open /login
+2. Enter text in password field
+3. Click visibility toggle icon
+4. Click again to hide",,Password toggles between type=text and type=password; entered text visible/hidden accordingly,,, Medium,Positive
+SCRUM7-TC-013,Loading State During Login,Verify button shows loading state and is disabled during API call,UI,"Valid user exists; network throttling applied","1. Open /login
+2. Enter valid credentials
+3. Click Login and immediately observe button","Username: testuser
+Password: Test@1234","Button is disabled and shows 'Signing in...' text while request is in progress",,, High,Positive
+SCRUM7-TC-014,Generic Error Message on Failure,Verify error message does not reveal which field (username or password) is wrong,UI,Login page is loaded,"1. Open /login
+2. Enter wrong credentials
+3. Click Login","Username: testuser
+Password: WrongPass","Error message is exactly 'Invalid Email/Username or Password' without specifying which field is wrong",,, High,Negative
+SCRUM7-TC-015,Token Stored in sessionStorage,Verify auth token is stored in sessionStorage on successful login,UI,"Valid user credentials exist","1. Open /login
+2. Enter valid credentials
+3. Click Login
+4. Open browser DevTools → Application → sessionStorage","Username: testuser
+Password: Test@1234","sessionStorage contains token/auth key after successful login",,, High,Positive
+SCRUM7-TC-016,PrivateRoute Guard - Unauthenticated,Verify unauthenticated user accessing /dashboard is redirected to /login,UI,No session token in sessionStorage,"1. Clear sessionStorage
+2. Navigate directly to http://localhost:5173/dashboard",,User is redirected to /login,,, High,Negative
+SCRUM7-TC-017,Authenticated User Accessing Login,Verify already-authenticated user accessing /login is redirected to /dashboard,UI,Valid session token present in sessionStorage,"1. Set valid token in sessionStorage
+2. Navigate to http://localhost:5173/login",,User is redirected to /dashboard,,, Medium,Positive
+SCRUM7-TC-018,Email Format Validation - Invalid,Verify email format validation when @ present but format is invalid,UI,Login page is loaded,"1. Open /login
+2. Enter invalid email format
+3. Click Login","Username: notanemail@
+Password: Test@1234","Inline validation error shown for invalid email format",,, Medium,Negative
+SCRUM7-TC-019,Email Format Validation - Valid,Verify no format validation error for properly formatted email,UI,Login page is loaded,"1. Open /login
+2. Enter valid email format
+3. Enter password
+4. Click Login","Username: user@domain.com
+Password: Test@1234","No format validation error; API call is made",,, Medium,Positive
+SCRUM7-TC-020,Username Without @ Treated as Username,Verify input without @ symbol is treated as username (not email),UI,Login page is loaded,"1. Open /login
+2. Enter value without @ symbol
+3. Enter password","Username: testuser123
+Password: Test@1234","No email format validation; input treated as username",,, Medium,Positive
+SCRUM7-TC-021,Rate Limiting After Failed Attempts,Verify login is locked/rate-limited after N consecutive failed attempts,UI + API,Login page is loaded; valid user account exists,"1. Attempt login with wrong password N times (N = configured limit, e.g., 5)
+2. Note response after last attempt","Username: testuser
+Password: WrongPass (repeated N times)","User sees lockout/rate-limit message or receives HTTP 429; further attempts rejected for configured duration",,, High,Edge
+SCRUM7-TC-022,ARIA Labels Accessibility,Verify form fields have ARIA labels for screen reader support,UI,Login page is loaded,"1. Open /login
+2. Inspect HTML for aria-label attributes on inputs
+3. Check for role=alert on error messages",,Inputs have descriptive aria-labels; error messages have role='alert'; aria-invalid set on errored fields,,, Medium,Positive
+SCRUM7-TC-023,Keyboard Navigation,Verify Tab key navigates through all focusable elements in correct order,UI,Login page is loaded,"1. Open /login
+2. Press Tab repeatedly to navigate through all focusable elements",,Focus moves in order: Username → Password → Toggle → Login → Forgot Password → Sign up,,, Medium,Positive
+SCRUM7-TC-024,Enter Key Submits Form,Verify pressing Enter in password field submits the form,UI,"Valid credentials exist","1. Open /login
+2. Enter username
+3. Tab to password field
+4. Enter password
+5. Press Enter","Username: testuser
+Password: Test@1234","Form submits and user is redirected to /dashboard",,, Medium,Positive
+SCRUM7-TC-025,Forgot Password Link,Verify 'Forgot password?' link is visible and navigates to forgot password page,UI,Login page is loaded,"1. Open /login
+2. Click 'Forgot password?' link",,User navigates to forgot password page/route,,, Medium,Positive
+SCRUM7-TC-026,Sign Up Link,Verify 'Sign up' link is visible and navigates to signup page,UI,Login page is loaded,"1. Open /login
+2. Click 'Sign up' link",,User navigates to signup page/route,,, Medium,Positive
+SCRUM7-TC-027,Responsive Layout - Mobile,Verify login page is fully usable on mobile viewport (375x667),UI,Login page is loaded,"1. Open /login in Chrome
+2. Set viewport to 375x667 (iPhone SE)
+3. Verify all elements visible and usable",,All form elements visible without horizontal scroll; layout adapts correctly,,, Medium,Positive
+SCRUM7-TC-028,Responsive Layout - Tablet,Verify login page layout on tablet viewport (768x1024),UI,Login page is loaded,"1. Open /login
+2. Set viewport to 768x1024 (iPad)
+3. Verify all elements",,"Layout is correct and all elements accessible on tablet viewport",,, Low,Positive
+SCRUM7-TC-029,XSS in Username Field,Verify XSS script in username field is not executed,UI + Security,Login page is loaded,"1. Open /login
+2. Enter XSS payload in username field
+3. Click Login","Username: <script>alert('xss')</script>
+Password: Test@1234","Script is not executed; payload is sanitized or treated as plain text",,, High,Edge
+SCRUM7-TC-030,SQL Injection in Username,Verify SQL injection attempt in username field is rejected,API + Security,Login page is loaded,"1. Open /login
+2. Enter SQL injection in username field
+3. Click Login","Username: ' OR '1'='1
+Password: anything","Login fails with error message; no SQL error exposed; injection not executed",,, High,Edge
+SCRUM7-TC-031,Very Long Username - Boundary,Verify behaviour with excessively long username input,UI + API,Login page is loaded,"1. Open /login
+2. Enter 1000-character string in username field
+3. Enter password
+4. Click Login","Username: a×1000
+Password: Test@1234","Either client-side maxlength prevents input or server returns 400; no server crash",,, Medium,Edge
+SCRUM7-TC-032,Whitespace-only Username,Verify whitespace-only input is treated as empty by validation,UI,Login page is loaded,"1. Open /login
+2. Enter spaces only in username field
+3. Enter password
+4. Click Login","Username: '   '
+Password: Test@1234","Validation error shown for empty/whitespace username; form not submitted",,, Medium,Edge
+SCRUM7-TC-033,Back Button After Login,Verify browser back button after successful login does not go back to login page,UI,"User is logged in; on /dashboard","1. Log in successfully
+2. Press browser back button",,User remains on /dashboard or is redirected back; /login page not shown with active session,,, Medium,Edge
+SCRUM7-TC-034,Session Persistence - Tab Close and Reopen,Verify sessionStorage is cleared when browser tab is closed,UI,User is logged in,"1. Log in successfully
+2. Close the browser tab
+3. Open new tab and navigate to /dashboard",,User is redirected to /login (sessionStorage cleared on tab close),,, Medium,Edge
+SCRUM7-TC-035,API Login - Valid Username,POST /api/auth/login with valid username + password returns 200 and token,API,"Backend server running at localhost:8080; valid user exists","1. Send POST to /api/auth/login with usernameOrEmail and password","Body: {""usernameOrEmail"":""testuser"",""password"":""Test@1234""}","HTTP 200; response body contains token/authToken field",,, High,Positive
+SCRUM7-TC-036,API Login - Valid Email,POST /api/auth/login with valid email + password returns 200 and token,API,"Backend running; valid user with email exists","1. Send POST to /api/auth/login","Body: {""usernameOrEmail"":""test@vintelix.com"",""password"":""Test@1234""}","HTTP 200; token returned in response",,, High,Positive
+SCRUM7-TC-037,API Login - Wrong Password,POST /api/auth/login with wrong password returns 401,API,Backend running; valid user exists,"1. Send POST to /api/auth/login with wrong password","Body: {""usernameOrEmail"":""testuser"",""password"":""WrongPass""}","HTTP 401; generic error message in response body; no token returned",,, High,Negative
+SCRUM7-TC-038,API Login - Non-existent User,POST /api/auth/login with non-existent user returns 401,API,Backend running,"1. Send POST to /api/auth/login with unknown user","Body: {""usernameOrEmail"":""nobody@ghost.com"",""password"":""Test@1234""}","HTTP 401; generic error message; same error as wrong password (no enumeration)",,, High,Negative
+SCRUM7-TC-039,API Login - Missing usernameOrEmail,POST /api/auth/login without usernameOrEmail field returns 400,API,Backend running,"1. Send POST to /api/auth/login without usernameOrEmail","Body: {""password"":""Test@1234""}","HTTP 400; validation error in response",,, High,Negative
+SCRUM7-TC-040,API Login - Missing password,POST /api/auth/login without password field returns 400,API,Backend running,"1. Send POST to /api/auth/login without password","Body: {""usernameOrEmail"":""testuser""}","HTTP 400; validation error in response",,, High,Negative
+SCRUM7-TC-041,API Login - Empty Body,POST /api/auth/login with empty body returns 400,API,Backend running,"1. Send POST to /api/auth/login with empty body {}","Body: {}","HTTP 400; validation error",,, High,Negative
+SCRUM7-TC-042,API Login - Rate Limiting,POST /api/auth/login returns 429 after N consecutive failures,API,Backend running,"1. Send POST to /api/auth/login with wrong password N+1 times in rapid succession","Body: {""usernameOrEmail"":""testuser"",""password"":""WrongPass""}","HTTP 429 Too Many Requests returned after threshold; Retry-After header present",,, High,Edge
+SCRUM7-TC-043,API Login - Token Format,Verify token in response is valid JWT format,API,Backend running; valid credentials,"1. Send POST to /api/auth/login with valid credentials
+2. Inspect response token","Body: {""usernameOrEmail"":""testuser"",""password"":""Test@1234""}","Token matches JWT format: header.payload.signature (three base64-encoded segments)",,, Medium,Positive
+SCRUM7-TC-044,API Login - Response Schema,Verify response body schema contains required fields,API,Backend running; valid credentials,"1. Send POST to /api/auth/login
+2. Inspect response","Body: {""usernameOrEmail"":""testuser"",""password"":""Test@1234""}","Response contains token and user info fields",,, Medium,Positive
+SCRUM7-TC-045,API Signup - Valid Registration,POST /api/auth/signup with valid data returns 200/201 with token,API,Backend running; email not already registered,"1. Send POST to /api/auth/signup with full valid user data","Body: {""username"":""newuser"",""email"":""new@test.com"",""password"":""Test@1234""}","HTTP 200/201; token returned; session established",,, High,Positive
+SCRUM7-TC-046,API Signup - Duplicate User,POST /api/auth/signup with existing email returns 409,API,Backend running; email already registered,"1. Send POST to /api/auth/signup with existing email","Body: {""username"":""existinguser"",""email"":""test@vintelix.com"",""password"":""Test@1234""}","HTTP 409 Conflict; error message indicating duplicate",,, High,Negative
+SCRUM7-TC-047,API Signup - Missing Required Field,POST /api/auth/signup missing required fields returns 400,API,Backend running,"1. Send POST to /api/auth/signup with missing field","Body: {""email"":""new@test.com"",""password"":""Test@1234""}","HTTP 400; field-level validation error",,, Medium,Negative
+SCRUM7-TC-048,Forgot Password Page Load,Verify forgot password page loads after clicking 'Forgot password?' link,UI,Login page is loaded,"1. Open /login
+2. Click 'Forgot password?' link",,Forgot password page loads with email input field and submit button,,, Medium,Positive
+SCRUM7-TC-049,Forgot Password Email Validation,Verify forgot password form validates email format,UI,Forgot password page is loaded,"1. Enter invalid email in forgot password form
+2. Click submit","Email: notanemail","Inline email format validation error shown",,, Medium,Negative
+SCRUM7-TC-050,Forgot Password Success Screen,Verify success screen shown after valid email submission,UI,Forgot password page is loaded,"1. Enter valid email
+2. Click submit","Email: test@vintelix.com","Success screen/message displayed",,, Medium,Positive
+SCRUM8-TC-001,Dashboard Route Protection,Verify /dashboard is protected and redirects unauthenticated users,UI,No active session,"1. Clear sessionStorage
+2. Navigate to http://localhost:5173/dashboard",,User is redirected to /login,,, High,Negative
+SCRUM8-TC-002,Dashboard Loads After Login,Verify /dashboard loads correctly after successful login,UI,Valid credentials exist,"1. Log in with valid credentials
+2. Observe redirect","Username: testuser
+Password: Test@1234",Dashboard page loads at /dashboard route,,, High,Positive
+SCRUM8-TC-003,Header Bar Visible,Verify header bar is present at the top of the Dashboard,UI,User is logged in at /dashboard,"1. Log in
+2. Navigate to /dashboard
+3. Check for header element",,Header bar is visible at the top of the page,,, High,Positive
+SCRUM8-TC-004,Header Shows Username,Verify logged-in user's username is displayed in header,UI,User logged in as 'testuser',"1. Log in as testuser
+2. Navigate to /dashboard
+3. Check header for username display",,Header displays 'testuser' (or the username from session),,, High,Positive
+SCRUM8-TC-005,Header Shows GMT Date and Time,Verify header displays current GMT date and time,UI,User is logged in at /dashboard,"1. Log in
+2. Navigate to /dashboard
+3. Check header for date/time display
+4. Compare with actual GMT time",,Header shows current date and time formatted in GMT (e.g. '06 May 2026 07:30:00 GMT'),,, High,Positive
+SCRUM8-TC-006,GMT Clock Updates Live,Verify the GMT clock updates every second without page refresh,UI,User is logged in at /dashboard,"1. Log in and navigate to /dashboard
+2. Observe clock for 3-5 seconds",,Clock seconds counter increments every second in real-time,,, High,Positive
+SCRUM8-TC-007,GMT Time Correct Regardless of Locale,Verify clock shows GMT time even when browser/OS timezone is non-GMT,UI,"User logged in; browser/OS timezone set to IST (+05:30) or PST (-08:00)","1. Set OS timezone to IST
+2. Log in and navigate to /dashboard
+3. Compare displayed time with actual GMT",,Displayed time matches GMT regardless of local timezone,,, High,Edge
+SCRUM8-TC-008,Left Navigation Panel Visible,Verify left navigation sidebar is present,UI,User is logged in at /dashboard,"1. Log in and navigate to /dashboard",,Left-hand navigation panel is visible on the page,,, High,Positive
+SCRUM8-TC-009,IMDA Entities Menu Item Present,Verify 'IMDA Entities' is the first item in the navigation,UI,User is logged in at /dashboard,"1. Log in and navigate to /dashboard
+2. Check sidebar for 'IMDA Entities'",,Sidebar contains 'IMDA Entities' as the first menu item,,, High,Positive
+SCRUM8-TC-010,IMDA Patterns Menu Item Present,Verify 'IMDA Patterns' is the second item in the navigation,UI,User is logged in at /dashboard,"1. Log in and navigate to /dashboard
+2. Check sidebar for 'IMDA Patterns'",,Sidebar contains 'IMDA Patterns' as the second menu item,,, High,Positive
+SCRUM8-TC-011,Navigation Item Order,Verify menu items are in correct order: Entities then Patterns,UI,User is logged in at /dashboard,"1. Log in and navigate to /dashboard
+2. Read sidebar items in order",,First item is 'IMDA Entities'; second item is 'IMDA Patterns',,, Medium,Positive
+SCRUM8-TC-012,IMDA Entities Navigation,Verify clicking 'IMDA Entities' navigates to /entities route,UI,User is logged in at /dashboard,"1. Log in and navigate to /dashboard
+2. Click 'IMDA Entities' in sidebar",,Browser navigates to /entities route; Entities placeholder page loads,,, High,Positive
+SCRUM8-TC-013,IMDA Patterns Navigation,Verify clicking 'IMDA Patterns' navigates to /patterns route,UI,User is logged in at /dashboard,"1. Log in and navigate to /dashboard
+2. Click 'IMDA Patterns' in sidebar",,Browser navigates to /patterns route; Patterns placeholder page loads,,, High,Positive
+SCRUM8-TC-014,Active State Highlighting - Entities,Verify 'IMDA Entities' is highlighted/active when on /entities route,UI,User is logged in,"1. Log in and navigate to /entities",,IMDA Entities menu item has active/selected styling applied,,, Medium,Positive
+SCRUM8-TC-015,Active State Highlighting - Patterns,Verify 'IMDA Patterns' is highlighted when on /patterns route,UI,User is logged in,"1. Log in and navigate to /patterns",,IMDA Patterns menu item has active/selected styling applied,,, Medium,Positive
+SCRUM8-TC-016,Active State Highlighting - Dashboard,Verify no sidebar item highlighted or dashboard highlighted when on /dashboard,UI,User is logged in at /dashboard,"1. Navigate to /dashboard",,Active state correctly reflects current route,,, Low,Positive
+SCRUM8-TC-017,Hover State on Nav Items,Verify hover visual effect on navigation menu items,UI,User is logged in at /dashboard,"1. Log in and navigate to /dashboard
+2. Hover mouse over 'IMDA Entities'
+3. Hover over 'IMDA Patterns'",,Visual hover state (background change / underline / color) is applied on hover for both items,,, Medium,Positive
+SCRUM8-TC-018,Focus State on Nav Items,Verify focus state visible when navigating sidebar via keyboard,UI,User is logged in at /dashboard,"1. Log in and navigate to /dashboard
+2. Press Tab to focus sidebar items",,Visible focus ring/outline appears on focused navigation items per WCAG AA,,, Medium,Positive
+SCRUM8-TC-019,/entities Route Protection,Verify /entities route redirects unauthenticated users to /login,UI,No active session,"1. Clear sessionStorage
+2. Navigate to http://localhost:5173/entities",,User is redirected to /login,,, High,Negative
+SCRUM8-TC-020,/patterns Route Protection,Verify /patterns route redirects unauthenticated users to /login,UI,No active session,"1. Clear sessionStorage
+2. Navigate to http://localhost:5173/patterns",,User is redirected to /login,,, High,Negative
+SCRUM8-TC-021,Logout Button Present and Functional,Verify Logout button is visible in header and clears session,UI,User is logged in at /dashboard,"1. Log in and navigate to /dashboard
+2. Click Logout button",,sessionStorage is cleared; user is redirected to /login,,, High,Positive
+SCRUM8-TC-022,Responsive - Sidebar Collapsible on Mobile,Verify sidebar collapses/toggles on mobile viewport,UI,User is logged in at /dashboard,"1. Log in and navigate to /dashboard
+2. Set viewport to 375x667 (mobile)
+3. Check sidebar behavior",,Sidebar is collapsed or hidden with a toggle mechanism on mobile viewport,,, Medium,Positive
+SCRUM8-TC-023,Responsive - Desktop Layout,Verify full layout renders correctly on desktop viewport,UI,User is logged in at /dashboard,"1. Log in and navigate to /dashboard
+2. Set viewport to 1920x1080",,Header and sidebar both visible; layout is correct on desktop,,, Medium,Positive
+SCRUM8-TC-024,Missing Username Fallback,Verify a fallback is shown when username is missing from session,UI,"User session exists but username field is empty/null","1. Log in
+2. Manually remove username from sessionStorage
+3. Reload /dashboard",,Dashboard displays a fallback value (e.g. 'Guest' or 'User') instead of blank/error,,, Medium,Edge
+SCRUM8-TC-025,Expired Session Redirect,Verify user is redirected to /login when session token is expired/invalid,UI,"User has expired/tampered token in sessionStorage","1. Set an expired/invalid token in sessionStorage
+2. Navigate to /dashboard",,User is redirected to /login,,, High,Edge
+SCRUM8-TC-026,ARIA Roles on Navigation,Verify nav element has proper ARIA roles for accessibility,UI,User is logged in at /dashboard,"1. Log in and navigate to /dashboard
+2. Inspect nav element ARIA attributes",,nav element has role='navigation' or is a semantic <nav>; menu items have appropriate aria-current='page' on active item,,, Medium,Positive
+SCRUM8-TC-027,Keyboard Navigation on Dashboard,Verify Tab/arrow key navigation through dashboard elements,UI,User is logged in at /dashboard,"1. Log in and navigate to /dashboard
+2. Use Tab and arrow keys to navigate",,All interactive elements (nav items; logout; links) are keyboard-accessible in logical order,,, Medium,Positive
+SCRUM8-TC-028,App Brand in Header,Verify application brand/logo is present in header,UI,User is logged in at /dashboard,"1. Log in and navigate to /dashboard
+2. Check header for logo/brand",,Application brand or logo is visible in the header bar,,, Low,Positive
+SCRUM8-TC-029,Page Title/Tab Title,Verify browser tab shows appropriate page title for Dashboard,UI,User is logged in at /dashboard,"1. Log in and navigate to /dashboard
+2. Check browser tab title",,Tab title reflects 'Dashboard' or the application name,,, Low,Positive
