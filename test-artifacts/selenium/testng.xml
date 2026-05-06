@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Vintelix UI Test Suite" verbose="1" parallel="none">
+
+    <test name="SCRUM-7 Login Tests">
+        <classes>
+            <class name="com.vintelix.tests.LoginTest"/>
+        </classes>
+    </test>
+
+    <test name="SCRUM-8 Dashboard Tests">
+        <classes>
+            <class name="com.vintelix.tests.DashboardTest"/>
+        </classes>
+    </test>
+
+</suite>
